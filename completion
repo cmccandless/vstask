@@ -9,7 +9,7 @@ _vstask()
         -h|--help) COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) ) ;;
         *)
             opts="$(${COMP_WORDS[*]} -l)"
-            COMPREPLY=( $(compgen -W "--help ${opts}" -- ${cur}) )
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
         ;;
     esac
 }

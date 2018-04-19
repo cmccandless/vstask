@@ -1,3 +1,10 @@
-#!/bin/sh
-ln -f vstask ~/bin/vstask
-echo ". $(pwd)/completion" >> ~/.bashrc
+#!/bin/bash
+HOME=$(echo ~)
+PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if command -v vstask >/dev/null 2>&1; then
+    echo "vstask is already installed"
+else
+    echo "source $PWD/completion" >> $HOME/.bashrc
+    echo "vstask has been installed"
+fi
+cp -f $PWD/vstask $HOME/bin/

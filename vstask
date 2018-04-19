@@ -5,8 +5,15 @@ import os
 import sys
 import subprocess
 
+VERSION = '1.0.2'
+
 argparser = argparse.ArgumentParser()
-argparser.add_argument('tasks', nargs='*')
+argparser.add_argument('tasks', nargs='*', metavar='TASK')
+argparser.add_argument(
+    '--version',
+    action='store_true',
+    help='print version information'
+)
 argparser.add_argument(
     '-l', '--list', action='store_true', help='list available tasks'
 )
@@ -14,23 +21,32 @@ argparser.add_argument(
     '-t', '--time', action='store_true', help='print runtime information'
 )
 
-old_cwd = os.getcwd()
-while not os.path.isdir('.vscode'):
-    if os.getcwd() == '/':
-        raise IOError('.vscode directory not found')
-    os.chdir('..')
-os.chdir(old_cwd)
+try:
+    old_cwd = os.getcwd()
+    while not os.path.isdir('.vscode'):
+        if os.getcwd() == '/':
+            raise IOError('.vscode directory not found')
+        os.chdir('..')
+    os.chdir(old_cwd)
 
-with open(os.path.join('.vscode', 'tasks.json')) as f:
-    tasks = json.loads(
-        '\n'.join(
-            line for line in f.readlines() if not line.strip().startswith('//')
-        )
-    )['tasks']
-
+    with open(os.path.join('.vscode', 'tasks.json')) as f:
+        tasks = json.loads(
+            '\n'.join(
+                line for line in f.readlines() if not line.strip().startswith('//')
+            )
+        )['tasks']
+except IOError:
+    tasks = []
 
 opts = argparser.parse_args()
 
+if opts.version:
+    print(VERSION)
+    sys.exit(0)
+
+if not tasks and opts.tasks:
+    print('Unable to locate .vscode directory or tasks.json')
+    sys.exit(1)
 
 if opts.list or not opts.tasks:
     for task in tasks:
