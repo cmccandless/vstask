@@ -1,0 +1,3 @@
+#!/bin/sh
+ln -f vstask ~/bin/vstask
+echo ". $(pwd)/completion" >> ~/.bashrc
