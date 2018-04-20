@@ -5,7 +5,7 @@ import os
 import sys
 import subprocess
 
-VERSION = '1.0.2'
+VERSION = '1.0.3'
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('tasks', nargs='*', metavar='TASK')
@@ -21,13 +21,12 @@ argparser.add_argument(
     '-t', '--time', action='store_true', help='print runtime information'
 )
 
+old_cwd = os.getcwd()
 try:
-    old_cwd = os.getcwd()
     while not os.path.isdir('.vscode'):
         if os.getcwd() == '/':
             raise IOError('.vscode directory not found')
         os.chdir('..')
-    os.chdir(old_cwd)
 
     with open(os.path.join('.vscode', 'tasks.json')) as f:
         tasks = json.loads(
@@ -54,6 +53,7 @@ if opts.list or not opts.tasks:
     sys.exit(0)
 
 root = os.path.abspath(os.getcwd())
+os.chdir(old_cwd)
 for task_name in opts.tasks:
     for task in tasks:
         if task['label'] != task_name:

@@ -4,12 +4,13 @@ _vstask()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
+    flags="--time --list"
 
     case "${prev}" in
-        -h|--help) COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) ) ;;
+        -h|--help|-l|--list) COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) ) ;;
         *)
             opts="$(${COMP_WORDS[*]} -l)"
-            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            COMPREPLY=( $(compgen -W "${flags} ${opts}" -- ${cur}) )
         ;;
     esac
 }
