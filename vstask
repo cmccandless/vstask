@@ -21,6 +21,26 @@ argparser.add_argument(
     '-t', '--time', action='store_true', help='print runtime information'
 )
 
+
+class Timer(object):
+    def __init__(self):
+        self.is_started = False
+        self.p = None
+
+    def start(self):
+        self.p = subprocess.Popen(
+            ['bash', '--login'],
+            stdin=subprocess.PIPE,
+            shell=True,
+        )
+        self.p.stdin.write('time read\n')
+
+    def stop(self):
+        self.p.stdin.write('\nexit\n')
+        self.p.wait()
+        self.p = None
+
+
 old_cwd = os.getcwd()
 try:
     while not os.path.isdir('.vscode'):
@@ -54,6 +74,10 @@ if opts.list or not opts.tasks:
 
 root = os.path.abspath(os.getcwd())
 os.chdir(old_cwd)
+timer = None
+if opts.time:
+    timer = Timer()
+    timer.start()
 for task_name in opts.tasks:
     for task in tasks:
         if task['label'] != task_name:
@@ -61,8 +85,6 @@ for task_name in opts.tasks:
         options = task.get('options', {})
         cmd = task['command']
         print(cmd)
-        if opts.time:
-            cmd = 'time ({})'.format(cmd)
         cwd = root
         if 'cwd' in options:
             cwd = os.path.join(root, options['cwd'])
@@ -75,3 +97,5 @@ for task_name in opts.tasks:
         p.stdin.write(cmd + '\n')
         p.stdin.write('exit\n')
         p.wait()
+if timer:
+    timer.stop()
