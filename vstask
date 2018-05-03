@@ -97,5 +97,9 @@ for task_name in opts.tasks:
         p.stdin.write(cmd + '\n')
         p.stdin.write('exit\n')
         p.wait()
+        if p.returncode != 0:
+            if timer:
+                timer.stop()
+            sys.exit(1)
 if timer:
     timer.stop()
