@@ -51,11 +51,16 @@ try:
     with open(os.path.join('.vscode', 'tasks.json')) as f:
         tasks = json.loads(
             '\n'.join(
-                line for line in f.readlines() if not line.strip().startswith('//')
+                line for line in f.readlines()
+                if not line.strip().startswith('//')
             )
         )['tasks']
 except IOError:
     tasks = []
+tasks = {
+    task['label']: task
+    for task in tasks
+}
 
 opts = argparser.parse_args()
 
@@ -68,8 +73,8 @@ if not tasks and opts.tasks:
     sys.exit(1)
 
 if opts.list or not opts.tasks:
-    for task in tasks:
-        print(task['label'])
+    for task_name in tasks.keys():
+        print(task_name)
     sys.exit(0)
 
 root = os.path.abspath(os.getcwd())
@@ -79,27 +84,25 @@ if opts.time:
     timer = Timer()
     timer.start()
 for task_name in opts.tasks:
-    for task in tasks:
-        if task['label'] != task_name:
-            continue
-        options = task.get('options', {})
-        cmd = task['command']
-        print(cmd)
-        cwd = root
-        if 'cwd' in options:
-            cwd = os.path.join(root, options['cwd'])
-        p = subprocess.Popen(
-            ['bash', '--login'],
-            stdin=subprocess.PIPE,
-            cwd=cwd,
-            shell=task['type'] == 'shell',
-        )
-        p.stdin.write(cmd + '\n')
-        p.stdin.write('exit\n')
-        p.wait()
-        if p.returncode != 0:
-            if timer:
-                timer.stop()
-            sys.exit(1)
+    task = tasks[task_name]
+    options = task.get('options', {})
+    cmd = task['command']
+    print(cmd)
+    cwd = root
+    if 'cwd' in options:
+        cwd = os.path.join(root, options['cwd'])
+    p = subprocess.Popen(
+        ['bash', '--login'],
+        stdin=subprocess.PIPE,
+        cwd=cwd,
+        shell=task['type'] == 'shell',
+    )
+    p.stdin.write(cmd + '\n')
+    p.stdin.write('exit\n')
+    p.wait()
+    if p.returncode != 0:
+        if timer:
+            timer.stop()
+        sys.exit(1)
 if timer:
     timer.stop()
