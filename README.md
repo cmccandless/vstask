@@ -5,7 +5,7 @@ CLI for VSCode tasks
 ```bash
 git clone https://github.com/cmccandless/vstask.git vstask
 cd vstask
-./install
+sudo ./install
 ```
 
 ## Usage
