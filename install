@@ -1,10 +1,23 @@
 #!/bin/bash
 HOME=$(echo ~)
+USER=$(echo $HOME | grep -oP "(?<=/home/).*")
 PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-if command -v vstask >/dev/null 2>&1; then
+if [ "-f" != "$1" ] && [ -f $HOME/.completion/vstask ]; then
     echo "vstask is already installed"
 else
-    echo "source $PWD/completion" >> $HOME/.bashrc
+    mkdir -p $HOME/.completion
+    cp -f completion $HOME/.completion/vstask
+    if [ ! -f $HOME/.bashrc ]; then
+        touch $HOME/.bashrc
+    fi
+    if grep -oP 'for f in ~/\.completion/\*; do source \$f; done' $HOME/.bashrc > /dev/null; then
+        echo 'custom completion already enabled'
+    else
+        echo 'for f in ~/.completion/*; do source $f; done' >> $HOME/.bashrc
+    fi
+    chown -R $USER:$USER $HOME/.completion
+    chmod -R 444 $HOME/.completion/*
+    cp -f $PWD/vstask $HOME/bin/
     echo "vstask has been installed"
+    echo "source ~/.bashrc or start new terminal to enable tab-completion"
 fi
-cp -f $PWD/vstask $HOME/bin/
