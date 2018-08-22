@@ -1,0 +1,39 @@
+sudo: false
+
+language: python
+
+python:
+- '2.7'
+- '3.4'
+- '3.5'
+- '3.6'
+- nightly
+
+matrix:
+  # Ignore failures for unstable versions
+  allow_failures:
+    - python: nightly
+
+install:
+  - make init
+  - python -m pip install -e .
+
+before_script:
+  - make lint
+
+script:
+  - make test
+
+after_success:
+  - coveralls
+
+deploy:
+  provider: pypi
+  user: cmccandless
+  password: $PYPI_PASSWORD
+  on:
+    branch: master
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: cmccandless/vstask
+    python: '3.6'

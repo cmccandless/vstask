@@ -1,0 +1,2 @@
+[flake8]
+exclude = __init__.py, docs/, build/, setup.py, *.egg-info, venv/

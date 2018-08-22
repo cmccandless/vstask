@@ -3,9 +3,7 @@ CLI for VSCode tasks
 
 ## Installation
 ```bash
-git clone https://github.com/cmccandless/vstask.git vstask
-cd vstask
-./install
+pip install vstask
 ```
 
 ## Usage

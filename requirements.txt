@@ -1,0 +1,4 @@
+flake8==3.5.0
+pytest==3.6.3
+coveralls>=1.2.0
+requests==2.19.1
