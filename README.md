@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/cmccandless/vstask.svg?branch=master)](https://travis-ci.com/cmccandless/vstask)[![PyPI](https://img.shields.io/pypi/v/nine.svg)](https://pypi.org/project/vstask/)
+
 # vstask
 CLI for VSCode tasks
 
