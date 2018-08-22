@@ -7,6 +7,7 @@ from . import cli
 
 
 def get_tasks():
+    old_cwd = os.getcwd()
     try:
         while not os.path.isdir('.vscode'):
             if os.getcwd() == '/':
@@ -22,7 +23,9 @@ def get_tasks():
             )['tasks']
     except IOError:
         tasks = []
-    return {
+    root = os.path.abspath(os.getcwd())
+    os.chdir(old_cwd)
+    return root, {
         task['label']: task
         for task in tasks
     }
@@ -49,13 +52,11 @@ def run_task(task, root='.'):
         p.stdin.write('exit\n'.encode())
         p.communicate()
     return p.wait()
-    # return p.returncode
 
 
 def main(args=None):
     opts = cli.parser.parse_args(args)
-    old_cwd = os.getcwd()
-    tasks = get_tasks()
+    root, tasks = get_tasks()
 
     if opts.completion:
         from .completion import COMPLETION
@@ -71,28 +72,8 @@ def main(args=None):
             print(task_name)
         return 0
 
-    root = os.path.abspath(os.getcwd())
-    os.chdir(old_cwd)
-    ret = 0
     with timed(opts.time):
         for task_name in opts.tasks:
-            # task = tasks[task_name]
-            # options = task.get('options', {})
-            # cmd = task['command']
-            # print(cmd)
-            # cwd = root
-            # if 'cwd' in options:
-            #     cwd = os.path.join(root, options['cwd'])
-            # p = subprocess.Popen(
-            #     ['bash', '--login'],
-            #     stdin=subprocess.PIPE,
-            #     cwd=cwd,
-            #     shell=task['type'] == 'shell',
-            # )
-            # p.stdin.write(cmd + '\n')
-            # p.stdin.write('exit\n')
-            # p.wait()
-            # if p.returncode != 0:
             if run_task(tasks[task_name], root) != 0:
                 return 1
-    return ret
+    return 0

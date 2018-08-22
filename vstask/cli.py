@@ -1,4 +1,5 @@
 import argparse
+import sys
 from .__version__ import VERSION
 
 is_completable = {}
@@ -39,7 +40,10 @@ register(
     '--version',
     action='version',
     help='print version information',
-    version='%(prog)s ' + VERSION,
+    version='%(prog)s {} for Python {}'.format(
+        VERSION,
+        sys.version.split('\n')[0],
+    ),
     completable=True,
     terminal=True,
 )
