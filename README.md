@@ -11,14 +11,15 @@ pip install vstask
 ## Usage
 ```bash
 $ vstask -h
-usage: vstask [-h] [--version] [-l] [-t] [TASK [TASK ...]]
+usage: vstask [-h] [--version] [-l] [-t] [--completion] [TASK [TASK ...]]
 
 positional arguments:
   TASK
 
 optional arguments:
-  -h, --help  show this help message and exit
-  --version   print version information
-  -l, --list  list available tasks
-  -t, --time  print runtime information
+  -h, --help    show this help message and exit
+  --version     print version information
+  -l, --list    list available tasks
+  -t, --time    print runtime information
+  --completion  bash tab-completion; usage: source <(vstask --completion)
 ```
