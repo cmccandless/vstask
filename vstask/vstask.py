@@ -6,6 +6,14 @@ from .Timer import timed
 from . import cli
 
 
+def get_task_label(task, index):
+    if 'label' in task:
+        return task['label']
+    elif 'group' in task and isinstance(task['group'], str):
+        return task['group']
+    return 'task{}'.format(index)
+
+
 def get_tasks():
     old_cwd = os.getcwd()
     try:
@@ -26,8 +34,8 @@ def get_tasks():
     root = os.path.abspath(os.getcwd())
     os.chdir(old_cwd)
     return root, {
-        task['label']: task
-        for task in tasks
+        get_task_label(task, i): task
+        for i, task in enumerate(tasks)
     }
 
 
