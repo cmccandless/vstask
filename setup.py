@@ -38,6 +38,6 @@ if __name__ == '__main__':
                 'vstask = vstask.vstask:main'
             ],
         },
-        install_requires=[],
+        install_requires=['aenum'],
         include_package_data=True
     )
