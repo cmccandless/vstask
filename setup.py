@@ -1,9 +1,20 @@
+import subprocess
+import sys
 import setuptools
 from vstask.__version__ import VERSION
+
+
+def changelog():
+    log =  subprocess.check_output('bin/changelog')
+    if sys.version_info[0] == 3:
+        log = log.decode()
+    return log
+
 
 if __name__ == '__main__':
     with open("README.md", "r") as fh:
         long_description = fh.read()
+    long_description += changelog() + '\n'
 
     setuptools.setup(
         name="vstask",

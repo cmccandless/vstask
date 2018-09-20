@@ -1,0 +1,13 @@
+#!/bin/sh
+
+AUTHOR=cmccandless
+REPO=vstask
+URL_BASE="https://github.com/$AUTHOR/$REPO/commit/"
+FMT="- %s ([%h](${URL_BASE}%H))%n"
+
+TAG_CURRENT=$(git tag | tac | sed '1q;d')
+TAG_PREV=$(git tag | tac | sed '2q;d')
+
+echo '## Changelog'
+
+git log --pretty=format:"$FMT" $TAG_PREV..$TAG_CURRENT | tac
