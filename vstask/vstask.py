@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import os
+import shlex
 import subprocess
 from .Timer import timed
 from . import cli
@@ -46,6 +47,8 @@ def get_tasks():
 def run_task(task, root='.'):
     options = task.get('options', {})
     cmd = task['command']
+    if 'args' in task:
+        cmd = shlex.join([cmd, *task.get('args', [])])
     print(f'> {cmd}')
     cwd = root
     if 'cwd' in options:
