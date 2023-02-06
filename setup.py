@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 import setuptools
@@ -5,10 +6,16 @@ from vstask.__version__ import VERSION
 
 
 def changelog():
-    log =  subprocess.check_output('bin/changelog')
-    if sys.version_info[0] == 3:
-        log = log.decode()
-    return log
+    try:
+        p = subprocess.run([os.environ["SHELL"], 'bin/changelog'], capture_output=True, check=True)
+        log = p.stdout
+        if sys.version_info[0] == 3:
+            print(log)
+            log = log.decode()
+        return log
+    except subprocess.CalledProcessError:
+        print("Unable to generate changelog")
+        return ""
 
 
 if __name__ == '__main__':

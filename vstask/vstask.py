@@ -31,6 +31,10 @@ def get_tasks():
             )['tasks']
     except IOError:
         tasks = []
+    except json.JSONDecodeError as e:
+        print("Invalid tasks.json:")
+        print(f'  {str(e)}')
+        tasks = []
     root = os.path.abspath(os.getcwd())
     os.chdir(old_cwd)
     return root, {
@@ -42,7 +46,7 @@ def get_tasks():
 def run_task(task, root='.'):
     options = task.get('options', {})
     cmd = task['command']
-    print(cmd)
+    print(f'> {cmd}')
     cwd = root
     if 'cwd' in options:
         cwd = os.path.join(root, options['cwd'])
@@ -50,7 +54,7 @@ def run_task(task, root='.'):
         ['bash', '--login'],
         stdin=subprocess.PIPE,
         cwd=cwd,
-        shell=task['type'] == 'shell',
+        shell=task.get('type', 'process') == 'shell',
     )
     try:
         p.stdin.write(cmd + '\n')
