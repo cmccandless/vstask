@@ -89,6 +89,9 @@ def main(args=None):
 
     with timed(opts.time):
         for task_name in opts.tasks:
+            if task_name not in tasks.keys():
+                print("Unable to find {} in tasks.json".format(task_name))
+                return 1
             if run_task(tasks[task_name], root) != 0:
                 return 1
     return 0
